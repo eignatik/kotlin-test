@@ -3,7 +3,7 @@ package core
 import core.entity.Account
 import core.entity.Person
 
-class TransactionManager(var accounts: List<Account>) {
+class TransactionManager(private val accounts: List<Account>) {
 
     /**
      * Returns amount of money available on the person's account
@@ -11,6 +11,9 @@ class TransactionManager(var accounts: List<Account>) {
      */
     fun getAccountTotal(person: Person): Int = findAccount(person).amount
 
+    /**
+     * Deposit some money on person's account
+     */
     fun deposit(person: Person, amount: Int) {
         findAccount(person).amount += amount
     }
@@ -27,7 +30,11 @@ class TransactionManager(var accounts: List<Account>) {
         return canWithdraw
     }
 
-    fun transfer(person: Person, targetPerson: Person, amount: Int):Boolean {
+    /**
+     * Transfer some money between two persons' accounts
+     * @return Boolean: true if succeeded
+     */
+    fun transfer(person: Person, targetPerson: Person, amount: Int): Boolean {
         var success = false
         val personAccount = findAccount(person)
         if (personAccount.amount >= amount) {
@@ -38,8 +45,5 @@ class TransactionManager(var accounts: List<Account>) {
         return success
     }
 
-    private fun findAccount(person: Person): Account = accounts.stream()
-        .filter { it.holder == person }
-        .findFirst()
-        .get()
+    private fun findAccount(person: Person): Account = accounts.first { it.holder == person }
 }
