@@ -23,26 +23,24 @@ class TransactionManager(private val accounts: List<Account>) {
      * If there is not enough money, then it will be declined
      * @return Boolean: true if succeeded
      */
-    fun withdraw(person: Person, amount: Int): Boolean {
-        val account = findAccount(person)
-        val canWithdraw = account.amount >= amount
-        if (canWithdraw) account.amount -= amount
-        return canWithdraw
-    }
+    fun withdraw(person: Person, amount: Int) = findAccount(person).run {
+        if (this.amount >= amount) this.amount -= amount else 0
+    } != 0
+
 
     /**
      * Transfer some money between two persons' accounts
      * @return Boolean: true if succeeded
      */
-    fun transfer(person: Person, targetPerson: Person, amount: Int): Boolean {
-        var success = false
-        val personAccount = findAccount(person)
-        if (personAccount.amount >= amount) {
-            personAccount.amount -= amount
-            findAccount(targetPerson).amount += amount
-            success = true
+    fun transfer(person: Person, targetPerson: Person, amount: Int) = with(findAccount(person)) {
+        when {
+            this.amount >= amount -> {
+                this.amount -= amount
+                findAccount(targetPerson).amount += amount
+                return true
+            }
+            else -> false
         }
-        return success
     }
 
     private fun findAccount(person: Person): Account = accounts.first { it.holder == person }
