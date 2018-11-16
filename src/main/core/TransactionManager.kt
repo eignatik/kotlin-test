@@ -1,7 +1,7 @@
-package core
+package main.core
 
-import core.entity.Account
-import core.entity.Person
+import main.core.entity.Account
+import main.core.entity.Person
 
 class TransactionManager(private val accounts: List<Account>) {
 
